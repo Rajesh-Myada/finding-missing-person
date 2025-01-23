@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</head>
+<body class="container">
+    <center>
+        {% extends 'base.html' %}
+
+        {% block content %}
+        <h2 class="my-5">My Cases</h2>
+        <table class="table table-bordered table-striped"  width="20%">  
+            <thead class="table-dark text-light">
+                <tr style = "text-align: center;">  
+                <th>Case ID</th>  
+                <th>Station Name</th>  
+                <th>Name</th>
+                <th>Location</th>
+                <th>Phone Number</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Withdraw</th>
+                </tr>  
+            </thead> 
+            {% for details in all_detail %}  
+            <tr style = "text-align: center;vertical-align: middle;">
+                <td>{{ details.id }}</td>  
+                <td>{{ details.police_id}}</td>  
+                <td>{{ details.name }}</td>  
+                <td>{{ details.location }}</td>  
+                <td>{{ details.phno}}</td>  
+                <td>{{ details.date }}</td>  
+                <td>{{ details.status }}</td>  
+                <td>
+                    <form action="/withdrawcase/{{details.id}}" method="POST">
+                        <input type="submit" value="Withdraw" class="btn btn-danger">
+                    </form>
+                </td> 
+            </tr>  
+            {% endfor %}</table>
+            {% if len==0 %}
+            <h3>{{"No Records found"}}</h3>
+            {% endif %}
+            <br>
+            <a href="/generate_poster" class="btn btn-success"> Generate Poster </a>
+    </center>
+    {% endblock %}
+</body>
+</html>

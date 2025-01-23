@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Missing Person Poster Generator</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </head>
+  <body class="container">
+    {% extends 'base.html' %}
+    {% block content %}
+    <center class="mt-5">
+      <div class="row">
+        <div class="col">
+          <form method="POST" action="/generate_poster" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col">
+
+                <h1 class="my-3">Missing Person Poster Generator</h1>
+              </div>
+              <div class="col">
+                <input type="submit" class="btn btn-success mt-5" value="Generate poster">
+              </div>
+            </div>
+            <label class="form-label" for="name">Name:</label><br>
+            <input type="text" class="form-control" id="name" name="name" maxLength="10" required><br>
+      
+            <label class="form-label" for="contact">Contact name:</label><br>
+            <input type="text" class="form-control" id="contact" name="contact" maxLength="10" required><br>
+      
+            <label class="form-label" for="contact_number">Contact number:</label><br>
+            <input type="tel" class="form-control" id="contact_number" name="contact_number" pattern="[0-9]{10}" required><br>
+      
+            <label class="form-label" for="age">Age:</label><br>
+            <input type="number" class="form-control" id="age" name="age" min="1" max="150" required><br>
+      
+            <label class="form-label" for="height">Height:</label><br>
+            <input type="text" class="form-control" id="height" name="height" maxLength="10" required><br>
+      
+            <label class="form-label" for="weight">Weight:</label><br>
+            <input type="text" class="form-control" id="weight" name="weight" maxLength="10" required><br>
+      
+            <label class="form-label" for="last_seen_location">Last seen location:</label><br>
+            <input type="text" class="form-control" id="last_seen_location" name="last_seen_location" maxLength="10" required><br>
+            <label class="form-label" for="profile_pic">Profile picture:</label><br>
+            <input type="file" class="form-control" id="profile_pic" name="profile_pic" accept="image/*" required><br>
+          </form>
+        </div>
+        <div class="col my-3">
+          {% if filename %}
+            <h2>Generated Poster: {{ filename }}</h2>
+          <a download="poster.png" href="/static/{{ filename }}" title="Missing_Poster">
+            Click to download poster
+            <img src="/static/{{ filename }}" alt="Missing Person Poster">
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endblock %}
+    </center>
+  </body>
+</html>

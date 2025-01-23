@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .zoom {
+        transition: transform .2s; /* Animation */
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+        }
+        .zoom:hover {
+        transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+        }
+    </style>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    
+</head>
+<body class="container">
+
+
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <!-- content for the register/search template goes here -->
+
+
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Register New Case</button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Register New Case</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/register" method="post"  enctype="multipart/form-data">
+                <div class="modal-body">
+                    <label class="form-label" for="name">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name"><br>
+                    <label class="form-label" for="pemail">Parent Email:</label>
+                    <input type="email" class="form-control" id="pemail" name="pemail"><br>
+                    <label class="form-label" for="location">Location:</label>
+                    <input type="text" class="form-control" id="location" name="location"><br>
+                    <label class="form-label" for="phone">Phone Number:</label>
+                    <input type="text" class="form-control" id="phone" name="phone"><br>
+                    <label class="form-label" for="date">Case registered on</label>
+                    <input type="date" class="form-control" id="date" name="date"><br>
+                    <label class="form-label" for="image">Upload image</label>
+                    <input type="file" class="form-control" id="image" name="image"><br>
+                    <select class="form-select" name="status">
+                        <option value="Active" selected>Active</option>
+                        <option value="Closed" >Closed</option>
+                        <option value="Confirmation_Required">Confirmation Required</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Register">
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+
+
+    <div class="dropdown my-2">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+          Filter by Status
+        </button>   
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="/register?status=Active">Active</a></li>
+          <li><a class="dropdown-item" href="/register?status=Closed">Closed</a></li>
+          <li><a class="dropdown-item" href="/register?status=Confirmation_Required">Confirmation Required</a></li>
+        </ul>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+          <tr style = "text-align: center;">
+            <th>FIR-No</th>
+            <th>Name</th>
+            <th>Photo</th>
+            <th>Guardian  No</th>
+            <th>Last seen location</th>
+            <th>Case registered on</th>
+            <th>Status</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for missing_person in missing_persons %}
+            <tr style="text-align: center;vertical-align: middle;">
+                <td  style="position: relative;"><a href="/chat/{{ missing_person.id }}" class="stretched-link">{{ missing_person.id }}</a></td>
+                <td>{{ missing_person.name }}</td>
+                <td style="position: relative;">
+                    <div class="zoom">
+                        <img src="{{ missing_person.image }}" width="200" height="200">
+                    </div>
+                </td>
+                <td>{{ missing_person.phno }}</td>
+                <td>{{ missing_person.location }}</td>
+                <td>{{ missing_person.date }}</td>
+                <td>{{ missing_person.status }}</td>
+                <td>
+                    {% if missing_person.status == 'Confirmation_Required' and  not mailsent %}
+                    <form action="/checkagain/{{missing_person.id}}" method="get">
+                        <button class="btn btn-success my-2" type="submit">Check</button>
+                    </form>
+                    <br>
+                {% else %}
+                    <button class="btn btn-success mt-2" type="submit" data-bs-toggle="modal" data-bs-target="#upload_verify{{ missing_person.id }}">Upload and verify</button>
+                    <div class="modal fade" id="upload_verify{{ missing_person.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Upload and verify</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/search/{{ missing_person.id }}" method="post"  enctype="multipart/form-data">
+                                <div class="modal-body">
+                                    <label for="location" class="form-label">Location:</label>
+                                    <input type="text" id="location" name="location" class="form-control"><br>
+                                    <label for="image" class="form-label">Upload image</label>
+                                    <input type="file" id="image" name="image" class="form-control"><br>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <input type="submit" class="btn btn-primary" value="Verify">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <br>
+                    <button class="btn btn-warning my-5" type="submit" data-bs-toggle="modal" data-bs-target="#update{{ missing_person.id }}">Update</button>
+                    <div class="modal fade" id="update{{ missing_person.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Update</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="/update/{{ missing_person.id }}" method="post">
+                                <div class="modal-body">
+                                    <select class="form-select" name="status">
+                                        <option value="Active" selected>Active</option>
+                                        <option value="Closed" >Closed</option>
+                                        <option value="Confirmation_Required">Confirmation Required</option>
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <input type="submit" class="btn btn-primary" value="Submit">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                    <form action="/withdraw/{{ missing_person.id }}" method="post">
+                        <button class="btn btn-danger my-2" type="submit">Withdraw</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% endblock %}
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>    
+</body>
+</html>

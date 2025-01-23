@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        {% if 'user_id' in session %}
+            {% if session['role'] == 'police' %}
+                <center><h1>Welcome, {{ session['name'] }} </h1></center>
+            {% else %}
+                <center><h1>Welcome, {{ session['name'] }} ({{session['role']}})</h1></center>
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="btn btn-danger float-end">Logout</a>
+        {% endif %}
+    </div>
+    
+    {% block content %}{% endblock %}
+    
+</body>
+</html>

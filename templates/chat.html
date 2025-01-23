@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <title>Chat Room</title>
+  </head>
+ <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <body>
+    {% extends 'base.html' %}
+    {% block content %}
+    <br>
+    <br>
+    <center>
+      <h1>Chat Room</h1>
+      <h6>Connect with Other Police Stations and volunteers</h6>
+    
+
+    <section style="background-color: #eee;">
+      <form method="POST" action="{{request.path}}">
+      <div class="container py-5">
+          <div class="col-md-8 col-lg-6 col-xl-4">
+            <div class="card">
+              <div class="card-header d-flex justify-content-between align-items-center p-3"
+                style="border-top: 4px solid #ffa900;">
+                <h5 class="mb-0">Chat messages</h5>
+              </div>
+              <div class="card-body" id="messages" data-mdb-perfect-scrollbar="true" style="overflow-y: scroll;position: relative; height: 400px">
+
+                {% for message in messages %}
+                {% if message.username == session.name %}
+                  <div class="d-flex justify-content-between">
+                    <p class="small mb-1 text-muted">23 Jan 2:05 pm</p>
+                    <p class="small mb-1">{{ message.username }}</p>
+                  </div>
+                  <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                    <div>
+                      <p class="small p-2 me-3 mb-3 text-white rounded-3 bg-warning">{{ message.message }}</p>
+                    </div>
+                  </div>
+          
+                  {% else %}
+                    <div class="d-flex justify-content-between">
+                      <p class="small mb-1">{{ message.username }}</p>
+                      <p class="small mb-1 text-muted">23 Jan 2:00 pm</p>
+                    </div>
+                    <div class="d-flex flex-row justify-content-start">
+                      <div>
+                        <p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                          {{ message.message }}
+                          </p>
+                      </div>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+
+
+    
+                
+              <div class="card-footer bg-light sticky-bottom text-muted d-flex justify-content-start align-items-center p-3">
+                <div class="input-group">
+
+                  <input id="message" name="message" type="text" class="form-control" placeholder="Type message"
+                    aria-label="Recipient's username" aria-describedby="button-addon2" />
+                    <input class="btn btn-warning" type="submit" value="Send" style="padding-top: .55rem;">
+                  <!-- <button class="btn btn-warning" type="button" id="button-addon2" style="padding-top: .55rem;">
+                    Button
+                  </button> -->
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    </section>
+    </form>
+    </center>
+      <script>
+        var hasFocus;
+        var a=document.getElementById("message");
+
+        a.onfocus = function(){
+            hasFocus = true;
+        }
+
+        setInterval(reload, 10*1000);
+
+        function reload(){
+            if(!hasFocus){
+                location.reload(true);
+            }
+        }
+        var messagesDiv = document.getElementById("messages");
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    </script>
+    {% endblock %}
+  </body>
+</html>

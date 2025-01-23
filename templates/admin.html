@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    
+</head>
+<body class="container">
+    <center>
+        {% extends 'base.html' %}
+
+        {% block content %}
+    <h2 class="my-5">User Verification</h2>
+        <table class="table table-bordered table-striped"  width="20%">  
+            <thead class="table-dark text-light">
+                <tr style = "text-align: center;">  
+                <th>ID</th>  
+                <th>EMAIL</th>  
+                <th>PASSWORD</th>
+                <th>VERIFY</th>
+                </tr>  
+            </thead> 
+            {% for details in all_detail %}  
+            <tr style = "text-align: center;vertical-align: middle;">
+                <td>{{ details.id }}</td>  
+                <td>{{ details.email}}</td>  
+                <td>{{ details.password }}</td>  
+                <td>
+                    <form action="/acc" method="POST">
+                        <input  class="form-control" type="text" name="userid" value = {{ details.id }} hidden readonly/>
+                        <input class="form-check-input mb-2" type="radio" name="role" value="police" required> Police </input><br>
+                        <input class="form-check-input mb-2" type="radio" name="role" value="volunteer" required> Volunteer </input><br>
+                        <input class="form-check-input mb-2" type="radio" name="role" value="people" required> Common_People </input><br>
+                        <input class="form-check-input mb-2" type="radio" name="role" value="parent" required> Parent </input><br>
+                        <input class="form-check-input mb-2" type="radio" name="role" value="remove" required> Remove </input><br>
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+                </td> 
+            </tr>  
+            {% endfor %}</table> 
+            {% if len==0 %}
+            <h3>{{"No Records found"}}</h3>
+            {% endif %}
+      <br>
+    </center>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    {% endblock %}
+</body>
+</html>
